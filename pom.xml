@@ -60,21 +60,21 @@
   </modules>
 
   <properties>
-    <revision>1.2.2</revision>
+    <revision>2.0.1-SNAPSHOT</revision>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <argLine>-Dfile.encoding=UTF-8</argLine>
 
-    <provider.version>1.1.1</provider.version>
+    <provider.version>2.1.1</provider.version>
 
-    <mybatis.version>3.5.9</mybatis.version>
+    <mybatis.version>3.5.10</mybatis.version>
     <mybatis-spring.version>2.0.7</mybatis-spring.version>
     <mybatis-spring-boot.version>2.2.2</mybatis-spring-boot.version>
 
-    <springframework.version>5.3.18</springframework.version>
-    <springboot.version>2.6.6</springboot.version>
+    <springframework.version>5.3.21</springframework.version>
+    <springboot.version>2.7.1</springboot.version>
 
     <logback.version>1.2.11</logback.version>
     <hsqldb.version>2.5.2</hsqldb.version>
@@ -84,11 +84,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>mybatis-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>io.mybatis</groupId>
+        <artifactId>mybatis-provider</artifactId>
+        <version>${provider.version}</version>
       </dependency>
 
       <dependency>
@@ -147,6 +145,20 @@
     </dependencies>
   </dependencyManagement>
 
+  <repositories>
+    <repository>
+      <id>maven-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <build>
     <testResources>
       <testResource>
@@ -169,6 +181,34 @@
             <arg>-parameters</arg>
           </compilerArgs>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+          <pomElements>
+            <dependencies>expand</dependencies>
+          </pomElements>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -207,34 +247,6 @@
                 <phase>package</phase>
                 <goals>
                   <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>flatten-maven-plugin</artifactId>
-            <version>1.1.0</version>
-            <configuration>
-              <updatePomFile>true</updatePomFile>
-              <flattenMode>resolveCiFriendliesOnly</flattenMode>
-              <pomElements>
-                <dependencies>expand</dependencies>
-              </pomElements>
-            </configuration>
-            <executions>
-              <execution>
-                <id>flatten</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>flatten</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>flatten.clean</id>
-                <phase>clean</phase>
-                <goals>
-                  <goal>clean</goal>
                 </goals>
               </execution>
             </executions>

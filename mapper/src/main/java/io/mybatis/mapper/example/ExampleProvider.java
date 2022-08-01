@@ -132,10 +132,10 @@ public class ExampleProvider {
   public static String deleteByExample(ProviderContext providerContext) {
     return SqlScript.caching(providerContext, (entity, util) ->
         util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
-            + "DELETE FROM " + entity.table()
+            + "DELETE FROM " + entity.tableName()
             + util.parameterNotNull("Example cannot be null")
             //是否允许空条件，默认允许，允许时不检查查询条件
-            + (entity.getProp("deleteByExample.allowEmpty", true) ?
+            + (entity.getPropBoolean("deleteByExample.allowEmpty", true) ?
             "" : util.variableIsFalse("_parameter.isEmpty()", "Example Criteria cannot be empty"))
             + EXAMPLE_WHERE_CLAUSE
             + util.ifTest("endSql != null and endSql != ''", () -> "${endSql}"));
@@ -152,13 +152,13 @@ public class ExampleProvider {
       @Override
       public String getSql(EntityTable entity) {
         return ifTest("example.startSql != null and example.startSql != ''", () -> "${example.startSql}")
-            + "UPDATE " + entity.table()
+            + "UPDATE " + entity.tableName()
             + set(() -> entity.updateColumns().stream().map(
             column -> column.columnEqualsProperty("entity.")).collect(Collectors.joining(",")))
             //TODO 测试
             + variableNotNull("example", "Example cannot be null")
             //是否允许空条件，默认允许，允许时不检查查询条件
-            + (entity.getProp("updateByExample.allowEmpty", true) ?
+            + (entity.getPropBoolean("updateByExample.allowEmpty", true) ?
             "" : variableIsFalse("example.isEmpty()", "Example Criteria cannot be empty"))
             + UPDATE_BY_EXAMPLE_WHERE_CLAUSE
             + ifTest("example.endSql != null and example.endSql != ''", () -> "${example.endSql}");
@@ -178,11 +178,11 @@ public class ExampleProvider {
       public String getSql(EntityTable entity) {
         return ifTest("example.startSql != null and example.startSql != ''", () -> "${example.startSql}")
             + variableNotEmpty("example.setValues", "Example setValues cannot be empty")
-            + "UPDATE " + entity.table()
+            + "UPDATE " + entity.tableName()
             + EXAMPLE_SET_CLAUSE_INNER_WHEN
             + variableNotNull("example", "Example cannot be null")
             //是否允许空条件，默认允许，允许时不检查查询条件
-            + (entity.getProp("updateByExample.allowEmpty", true) ?
+            + (entity.getPropBoolean("updateByExample.allowEmpty", true) ?
             "" : variableIsFalse("example.isEmpty()", "Example Criteria cannot be empty"))
             + UPDATE_BY_EXAMPLE_WHERE_CLAUSE
             + ifTest("example.endSql != null and example.endSql != ''", () -> "${example.endSql}");
@@ -201,14 +201,14 @@ public class ExampleProvider {
       @Override
       public String getSql(EntityTable entity) {
         return ifTest("example.startSql != null and example.startSql != ''", () -> "${example.startSql}")
-            + "UPDATE " + entity.table()
+            + "UPDATE " + entity.tableName()
             + set(() -> entity.updateColumns().stream().map(
             column -> ifTest(column.notNullTest("entity."),
                 () -> column.columnEqualsProperty("entity.") + ",")).collect(Collectors.joining(LF)))
             //TODO 测试
             + variableNotNull("example", "Example cannot be null")
             //是否允许空条件，默认允许，允许时不检查查询条件
-            + (entity.getProp("updateByExampleSelective.allowEmpty", true) ?
+            + (entity.getPropBoolean("updateByExampleSelective.allowEmpty", true) ?
             "" : variableIsFalse("example.isEmpty()", "Example Criteria cannot be empty"))
             + UPDATE_BY_EXAMPLE_WHERE_CLAUSE
             + ifTest("example.endSql != null and example.endSql != ''", () -> "${example.endSql}");
@@ -231,7 +231,7 @@ public class ExampleProvider {
             + ifTest("distinct", () -> "distinct ")
             + ifTest("selectColumns != null and selectColumns != ''", () -> "${selectColumns}")
             + ifTest("selectColumns == null or selectColumns == ''", entity::baseColumnAsPropertyList)
-            + " FROM " + entity.table()
+            + " FROM " + entity.tableName()
             + ifParameterNotNull(() -> EXAMPLE_WHERE_CLAUSE)
             + ifTest("orderByClause != null", () -> " ORDER BY ${orderByClause}")
             + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(""))
@@ -256,7 +256,7 @@ public class ExampleProvider {
             + ifTest("simpleSelectColumns != null and simpleSelectColumns != ''", () -> "${simpleSelectColumns}")
             + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> "*")
             + ") FROM "
-            + entity.table()
+            + entity.tableName()
             + ifParameterNotNull(() -> EXAMPLE_WHERE_CLAUSE)
             + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
       }
