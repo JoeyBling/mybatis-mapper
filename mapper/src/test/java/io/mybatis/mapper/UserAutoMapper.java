@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.SelectKey;
 
 public interface UserAutoMapper extends
-  EntityMapper<UserAuto, Long>,
-  CursorMapper<UserAuto, Example<UserAuto>>,
-  FnMapper<UserAuto>,
-  ExampleMapper<UserAuto, Example<UserAuto>>,
-  ListMapper<UserAuto>,
-  SumMapper<UserAuto> {
+    EntityMapper<UserAuto, Long>,
+    CursorMapper<UserAuto, Example<UserAuto>>,
+    FnMapper<UserAuto>,
+    ExampleMapper<UserAuto, Example<UserAuto>>,
+    ListMapper<UserAuto>,
+    SumMapper<UserAuto> {
 
   @Override
   @Lang(Caching.class)

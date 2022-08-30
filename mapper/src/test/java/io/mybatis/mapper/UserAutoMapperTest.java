@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
 
 package io.mybatis.mapper;
 
-import io.mybatis.mapper.base.EntityMapper;
 import io.mybatis.mapper.example.Example;
 import io.mybatis.mapper.fn.Fn;
-import io.mybatis.mapper.model.User;
 import io.mybatis.mapper.model.UserAuto;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Assert;
 import org.junit.Test;

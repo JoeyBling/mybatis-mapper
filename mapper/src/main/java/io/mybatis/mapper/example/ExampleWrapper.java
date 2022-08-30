@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.mybatis.mapper.example;
 
 import io.mybatis.common.util.Assert;
@@ -95,6 +111,7 @@ public class ExampleWrapper<T, I extends Serializable> {
 
   /**
    * 支持使用字符串形式来设置 order by，用以支持一些特殊的排序方案
+   *
    * @param orderByCondition 排序字符串（不会覆盖已有的排序内容）
    * @return Example
    */
@@ -105,6 +122,7 @@ public class ExampleWrapper<T, I extends Serializable> {
 
   /**
    * 支持使用字符串形式来设置 order by，用以支持一些特殊的排序方案
+   *
    * @param orderByCondition 排序字符串构造方法,比如通过数组集合循环拼接等
    * @return Example
    */
@@ -115,7 +133,8 @@ public class ExampleWrapper<T, I extends Serializable> {
 
   /**
    * 支持使用字符串形式来设置 order by，用以支持一些特殊的排序方案
-   * @param useOrderBy 条件表达式，true使用，false不使用 字符串排序
+   *
+   * @param useOrderBy       条件表达式，true使用，false不使用 字符串排序
    * @param orderByCondition 排序字符串构造方法，比如通过数组集合循环拼接等
    * @return Example
    */

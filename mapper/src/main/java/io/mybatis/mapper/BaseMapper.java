@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.mybatis.mapper;
 
 import io.mybatis.mapper.base.EntityMapper;
@@ -13,6 +29,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -55,7 +72,7 @@ public interface BaseMapper<T, I extends Serializable>
    * @param <F>            字段类型
    * @return 实体列表
    */
-  default <F> List<T> selectByFieldList(Fn<T, F> field, List<F> fieldValueList) {
+  default <F> List<T> selectByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
     Example<T> example = new Example<>();
     example.createCriteria().andIn((Fn<T, Object>) field, fieldValueList);
     return selectByExample(example);
@@ -71,7 +88,7 @@ public interface BaseMapper<T, I extends Serializable>
    * @param <F>            字段类型
    * @return 实体列表
    */
-  default <F> int deleteByFieldList(Fn<T, F> field, List<F> fieldValueList) {
+  default <F> int deleteByFieldList(Fn<T, F> field, Collection<F> fieldValueList) {
     Example<T> example = new Example<>();
     example.createCriteria().andIn((Fn<T, Object>) field, fieldValueList);
     return deleteByExample(example);
