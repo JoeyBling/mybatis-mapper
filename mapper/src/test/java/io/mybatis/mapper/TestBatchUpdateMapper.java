@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package io.mybatis.service.model;
+package io.mybatis.mapper;
 
-import io.mybatis.provider.Entity;
+import io.mybatis.mapper.base.EntityMapper;
+import io.mybatis.mapper.list.ListMapper;
+import io.mybatis.mapper.model.UserIds;
 
-public class BaseId<T extends BaseId> {
-  @Entity.Column(id = true, insertable = false)
-  private Integer id;
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
+public interface TestBatchUpdateMapper extends ListMapper<UserIds>, EntityMapper<UserIds,UserIds> {
 
 }

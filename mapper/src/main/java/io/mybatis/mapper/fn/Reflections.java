@@ -16,9 +16,12 @@
 
 package io.mybatis.mapper.fn;
 
+import io.mybatis.provider.EntityColumn;
+
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,8 +39,27 @@ public class Reflections {
   private Reflections() {
   }
 
-  public static ClassField fnToFieldName(Fn fn) {
+  public static ClassField fnToFieldName(Fn<?, ?> fn) {
     try {
+      Class<?> clazz = null;
+      //支持直接指定的字段名
+      if (fn instanceof Fn.FnName) {
+        Fn.FnName<?, ?> field = (Fn.FnName<?, ?>) fn;
+        if (field.column) {
+          return new ClassColumn(field.entityClass, field.name);
+        } else {
+          return new ClassField(field.entityClass, field.name);
+        }
+      }
+      //支持指定实体类
+      if (fn instanceof Fn.FnImpl) {
+        clazz = ((Fn.FnImpl<?, ?>) fn).entityClass;
+        fn = ((Fn.FnImpl<?, ?>) fn).fn;
+        //避免嵌套多次的情况
+        while (fn instanceof Fn.FnImpl) {
+          fn = ((Fn.FnImpl<?, ?>) fn).fn;
+        }
+      }
       Method method = fn.getClass().getDeclaredMethod("writeReplace");
       method.setAccessible(Boolean.TRUE);
       SerializedLambda serializedLambda = (SerializedLambda) method.invoke(fn);
@@ -48,22 +70,27 @@ public class Reflections {
         getter = getter.substring(2);
       }
       String field = Introspector.decapitalize(getter);
-      //主要是这里  serializedLambda.getInstantiatedMethodType()
-      Matcher matcher = INSTANTIATED_CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
-      String implClass;
-      if (matcher.find()) {
-        implClass = matcher.group("cls").replaceAll("/", "\\.");
-      } else {
-        implClass = serializedLambda.getImplClass().replaceAll("/", "\\.");
+      if (clazz == null) {
+        //主要是这里  serializedLambda.getInstantiatedMethodType()
+        Matcher matcher = INSTANTIATED_CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
+        String implClass;
+        if (matcher.find()) {
+          implClass = matcher.group("cls").replaceAll("/", "\\.");
+        } else {
+          implClass = serializedLambda.getImplClass().replaceAll("/", "\\.");
+        }
+        clazz = Class.forName(implClass);
       }
-      Class<?> clazz = Class.forName(implClass);
       return new ClassField(clazz, field);
     } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static class ClassField {
+  /**
+   * 记录字段对应的类和字段名
+   */
+  public static class ClassField implements Predicate<EntityColumn> {
     private final Class<?> clazz;
     private final String   field;
 
@@ -72,12 +99,32 @@ public class Reflections {
       this.field = field;
     }
 
+    @Override
+    public boolean test(EntityColumn column) {
+      return getField().equalsIgnoreCase(column.property());
+    }
+
     public Class<?> getClazz() {
       return clazz;
     }
 
     public String getField() {
       return field;
+    }
+  }
+
+  /**
+   * 记录字段对应的类和列名
+   */
+  public static class ClassColumn extends ClassField {
+
+    public ClassColumn(Class<?> clazz, String field) {
+      super(clazz, field);
+    }
+
+    @Override
+    public boolean test(EntityColumn column) {
+      return getField().equalsIgnoreCase(column.column());
     }
   }
 }

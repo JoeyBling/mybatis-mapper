@@ -1,6 +1,6 @@
-drop table user if exists;
-drop table user_ids if exists;
-drop table user_auto if exists;
+drop table if exists user;
+drop table if exists user_ids;
+drop table if exists user_auto;
 
 create table user
 (
