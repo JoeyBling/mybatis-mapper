@@ -16,13 +16,10 @@
 
 package io.mybatis.mapper;
 
-import io.mybatis.mapper.base.EntityMapper;
 import io.mybatis.mapper.base.EntityProvider;
-import io.mybatis.mapper.cursor.CursorMapper;
 import io.mybatis.mapper.example.Example;
-import io.mybatis.mapper.example.ExampleMapper;
-import io.mybatis.mapper.fn.FnMapper;
 import io.mybatis.mapper.list.ListMapper;
+import io.mybatis.mapper.logical.LogicalMapper;
 import io.mybatis.mapper.model.User;
 import io.mybatis.provider.Caching;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -33,11 +30,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 import java.util.List;
 
 public interface UserMapper extends
-    EntityMapper<User, Long>,
-    CursorMapper<User, Example<User>>,
-    FnMapper<User>,
-    ExampleMapper<User, Example<User>>,
     ListMapper<User>,
+    LogicalMapper<User, Long>,
     SumMapper<User> {
 
   @Override
